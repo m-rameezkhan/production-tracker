@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Production Report</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="entry.css">
+  <link rel="stylesheet" href="report-card.css">  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">Production App</div>
+      <ul>
+        <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="production.html"><i class="fas fa-clipboard-list"></i> Production Entry</a></li>
+        <li><a href="daily-report.html"><i class="fas fa-calendar-day"></i> Daily Report</a></li>
+        <li><a href="monthly-report.html" class="active"><i class="fas fa-chart-line"></i> Monthly Report</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <div class="window">
+        <h1>Daily Production Report</h1>
+
+        <!-- Date Range -->
+        <div class="form-row">
+          <label for="fromDate">From:</label>
+          <input type="date" id="fromDate">
+          <label for="toDate">To:</label>
+          <input type="date" id="toDate">
+          <button id="fetchDaily">Show Report</button>
+        </div>
+
+        <!-- Report Cards -->
+        <div id="dailyReportContainer"></div>
+
+        <button id="printDaily">Print Report</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js" defer></script>
+  <script src="daily-report.js" defer></script>
+</body>
+
+</html>

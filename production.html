@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Production Entry Form</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="entry.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <div class="layout">
+    <!-- 🔹 Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">Production App</div>
+      <ul>
+        <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="production.html"><i class="fas fa-clipboard-list"></i> Production Entry</a></li>
+        <li><a href="daily-report.html"><i class="fas fa-calendar-day"></i> Daily Report</a></li>
+        <li><a href="monthly-report.html"><i class="fas fa-chart-line"></i> Monthly Report</a></li>
+      </ul>
+    </aside>
+
+    <!-- 🔹 Main Content -->
+    <main class="content">
+      <div class="window">
+        <h1>Daily Production Entry</h1>
+
+        <form id="productionForm">
+          <!-- Date -->
+          <div class="form-row">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+          </div>
+
+          <!-- Machine 1 -->
+          <fieldset>
+            <legend>Machine 1 (L1, L2, L3)</legend>
+            <div class="form-row">
+              <label>L1 (m / kg):</label>
+              <input type="number" id="L1_m" placeholder="m">
+              <input type="number" id="L1_kg" placeholder="kg">
+            </div>
+            <div class="form-row">
+              <label>L2 (m / kg):</label>
+              <input type="number" id="L2_m" placeholder="m">
+              <input type="number" id="L2_kg" placeholder="kg">
+            </div>
+            <div class="form-row">
+              <label>L3 (m / kg):</label>
+              <input type="number" id="L3_m" placeholder="m">
+              <input type="number" id="L3_kg" placeholder="kg">
+            </div>
+          </fieldset>
+
+          <!-- Machine 2 -->
+          <fieldset>
+            <legend>Machine 2 (L4, L5)</legend>
+            <div class="form-row">
+              <label>L4 (m / kg):</label>
+              <input type="number" id="L4_m" placeholder="m">
+              <input type="number" id="L4_kg" placeholder="kg">
+            </div>
+            <div class="form-row">
+              <label>L5 (m / kg):</label>
+              <input type="number" id="L5_m" placeholder="m">
+              <input type="number" id="L5_kg" placeholder="kg">
+            </div>
+          </fieldset>
+
+          <!-- Totals -->
+          <fieldset>
+            <legend>Totals</legend>
+            <div class="totals">
+              <p>Machine 1 Total: <span id="m1_total">0 m / 0 kg</span></p>
+              <p>Machine 2 Total: <span id="m2_total">0 m / 0 kg</span></p>
+              <p class="grand">Grand Total: <span id="grand_total">0 m / 0 kg</span></p>
+            </div>
+          </fieldset>
+
+          <!-- Buttons -->
+          <div class="form-actions">
+            <button type="button" id="calculateBtn">Calculate</button>
+            <button type="submit" id="saveBtn">Save</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+  <script src="production.js" defer></script>
+
+
+</body>
+
+</html>

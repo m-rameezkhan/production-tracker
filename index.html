@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production Dashboard (Index)</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css">
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <div class="dashboard-layout">
+
+    <!-- Left Navbar -->
+    <aside class="sidebar">
+      <div class="brand">Production App</div>
+      <ul>
+        <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="production.html"><i class="fas fa-clipboard-list"></i> Production Entry</a></li>
+        <li><a href="daily-report.html"><i class="fas fa-calendar-day"></i> Daily Report</a></li>
+        <li><a href="monthly-report.html"><i class="fas fa-chart-line"></i> Monthly Report</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="content">
+      <h1 class="title">Production Dashboard</h1>
+      <div class="cards">
+        <div class="card" data-page="production.html">
+          <i class="fas fa-clipboard-list icon"></i>
+          <h2>Enter Production</h2>
+          <p>Add new production records</p>
+        </div>
+
+        <div class="card" data-page="daily-report.html">
+          <i class="fas fa-calendar-day icon"></i>
+          <h2>Daily Report</h2>
+          <p>View today’s production summary</p>
+        </div>
+
+        <div class="card" data-page="monthly-report.html">
+          <i class="fas fa-chart-line icon"></i>
+          <h2>Monthly Report</h2>
+          <p>Check monthly performance</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
