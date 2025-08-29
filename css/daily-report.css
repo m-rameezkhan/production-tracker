@@ -1,0 +1,235 @@
+/* Daily Report Card Styling */
+.report-card {
+    background: #fff;
+    border: 2px solid #e1e1e1;
+    padding: 14px;
+    margin: 20px 0px;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.4;
+}
+
+/* Date Header */
+.report-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    font-weight: 600;
+}
+
+.report-card .card-header h3 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 600;
+    color: #333;
+}
+
+/* From Row (Date Range + Button) */
+.from-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;                /* space between items */
+  margin: 15px 0;
+  padding: 10px 14px;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.from-row label {
+  font-weight: 600;
+  color: #333;
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+.from-row input[type="date"] {
+  padding: 6px 10px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.from-row input[type="date"]:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 4px rgba(74, 144, 226, 0.3);
+}
+
+/* Button Styling */
+.btn {
+  padding: 7px 14px;
+  background: #1e5a9e;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  border: 2px solid transparent;
+}
+
+.btn:hover {
+  color: #1e5a9e;
+  background-color: white;
+  border: 2px solid #1e5a9e;
+}
+
+.from-row button:active {
+  transform: scale(0.97);
+}
+.edit-btn{
+    margin-top: 5px;
+}
+
+/* Machine Sections */
+.machine-wrapper {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.machine-box {
+    flex: 1;
+    background: #fafafa;
+    border: 2px solid #ddd;
+    /* border-radius: 8px; */
+    padding: 10px;
+}
+
+.machine-box h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #444;
+    margin: 0px 5px 5px 5px;
+}
+
+/* Table-like layout inside each machine box */
+.machine-box .form-header {
+    display: grid;
+    grid-template-columns: 40px 1fr 1fr;
+    align-items: center;
+    gap: 8px;
+}
+
+.machine-box .form-header {
+    font-weight: 600;
+    color: #555;
+    padding-bottom: 4px;
+    text-align: center;
+}
+
+.form-row {
+    margin-bottom: 6px;
+    flex-wrap: nowrap;
+}
+
+.form-row label {
+    font-weight: 500;
+    color: #222;
+    width: fit-content;
+    margin-right: 10px;
+}
+
+/* Input Fields */
+.form-row input {
+    width: 100%;
+    padding: 4px;
+    font-weight: 600;
+    border: 1px solid #bbb;
+    border-radius: 0px;
+    text-align: right;
+    background: #f9f9f9;
+}
+
+.form-row input[readonly] {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+/* Totals Box */
+.totals-box {
+    border: 2px solid #ddd;
+    padding: 10px 20px;
+    background: #fdfdfd;
+    margin-top: 10px;
+}
+
+.totals-box h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #444;
+    margin: 0 0 8px 0;
+}
+
+/* Table Layout */
+.totals-table {
+    display: grid;
+    grid-template-columns: 1fr 130px 130px;
+    border: 1px solid #bbb;
+}
+
+.totals-row {
+    display: contents;
+    /* keep grid structure */
+}
+
+.totals-row div {
+    padding: 6px 8px;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    font-size: 13px;
+    text-align: center;
+}
+
+.totals-row div:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Remove last borders */
+.totals-row div:last-child {
+    border-right: none;
+}
+
+.totals-table .totals-row:last-child div {
+    border-bottom: none;
+}
+
+/* Header Styling */
+.totals-row.header div {
+    font-weight: 700;
+    background: #f3f3f3;
+    color: #111;
+}
+
+/* Grand Total */
+.totals-row.grand div {
+    font-weight: 700;
+    color: #d32f2f;
+}
+
+
+/* Print Styles */
+@media print {
+    .report-card {
+        box-shadow: none;
+        border: 1px solid #000;
+        page-break-inside: avoid;
+        margin-bottom: 10px;
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .report-card input {
+        border: 1px solid #000;
+        background: #fff;
+    }
+}

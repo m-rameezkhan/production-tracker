@@ -6,7 +6,7 @@
 /* Sidebar Layout */
 /* =========================== */
 .sidebar {
-  width: 220px;
+  width: 180px;
   background: #1e1e1e;
   color: #fff;
   height: 100vh;
@@ -58,9 +58,4 @@
   color: #fff;
 }
 
-/* Responsive */
-@media screen and (max-width: 992px) {
-  .sidebar {
-    width: 180px;
-  }
-}
+

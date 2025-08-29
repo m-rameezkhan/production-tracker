@@ -5,9 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monthly Production Report</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="entry.css">
-  <link rel="stylesheet" href="report-cards.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- <link rel="stylesheet" href="css/entry.css"> -->
+  <!-- <link rel="stylesheet" href="css/report-card.css"> -->
+  <link rel="stylesheet" href="css/monthly-report.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -28,7 +29,7 @@
         <div class="form-row">
           <label for="monthSelect">Select Month:</label>
           <input type="month" id="monthSelect">
-          <button id="fetchMonthly">Show Report</button>
+          <button id="fetchMonthly" class="btn">Show Report</button>
         </div>
 
         <!-- Monthly Report Table -->
@@ -51,13 +52,13 @@
           </table>
         </div>
 
-        <button id="printMonthly">Print Monthly Report</button>
+        <button id="printMonthly" class="print-btn btn">Print Monthly Report</button>
       </div>
     </main>
   </div>
 
-  <script src="script.js" defer></script>
-  <script src="monthly-report.js" defer></script>
+  <script src="js/script.js" defer></script>
+  <script src="js/monthly-report.js" defer></script>
 </body>
 
 </html>
