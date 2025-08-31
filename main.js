@@ -115,7 +115,6 @@ ipcMain.on('update-production', (event, updatedRow) => {
   }
 });
 
-
 // ===== Fetch Production Data =====
 ipcMain.handle('get-production-data', (event, filter) => {
   const filePath = path.join(__dirname, 'production.xlsx');
@@ -136,11 +135,95 @@ ipcMain.handle('get-production-data', (event, filter) => {
   }
 });
 
-// ===== Print Page =====
-ipcMain.on('print-page', (event, elementId) => {
-  if (win) {
-    win.webContents.print({ printBackground: true }, (success, errorType) => {
-      if (!success) console.error(errorType);
-    });
+// ===== Delete Production Data =====
+ipcMain.handle("delete-production", async (event, date) => {
+  try {
+    const filePath = path.join(__dirname, "production.xlsx");
+    if (!fs.existsSync(filePath)) {
+      return { success: false, message: "File not found" };
+    }
+
+    const workbook = XLSX.readFile(filePath);
+    const worksheet = workbook.Sheets["Production"];
+    if (!worksheet) {
+      return { success: false, message: "No Production sheet found" };
+    }
+
+    let data = XLSX.utils.sheet_to_json(worksheet);
+
+    // filter out row with the given date
+    const newData = data.filter(r => r.Date !== date);
+
+    // overwrite sheet with updated data
+    const newSheet = XLSX.utils.json_to_sheet(newData);
+    workbook.Sheets["Production"] = newSheet;
+    XLSX.writeFile(workbook, filePath);
+
+    console.log(`Row with Date ${date} deleted.`);
+    return { success: true };
+
+  } catch (error) {
+    console.error("Delete failed:", error);
+    return { success: false, message: error.message };
   }
 });
+
+
+ipcMain.on("print-page", (event, elementId) => {
+  if (win) {
+    win.webContents.executeJavaScript(`
+      (() => {
+        let section = document.getElementById("${elementId}");
+        if (!section) {
+          console.error("Section not found: ${elementId}");
+          return;
+        }
+
+        const printWindow = window.open("", "PRINT", "height=800,width=1200");
+
+        // Only include body + content styles; exclude any @page rules
+        const styles = Array.from(document.styleSheets)
+          .map(s => {
+            try {
+              return [...s.cssRules]
+                .filter(r => r.constructor.name !== 'CSSPageRule') // FILTER OUT @page
+                .map(r => r.cssText)
+                .join('');
+            } catch(e) { return ""; }
+          })
+          .join("\\n");
+
+        printWindow.document.write(\`
+          <html>
+          <head>
+            <title>Report</title>
+            <style>
+              body {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                margin: 0;
+                padding: 0;
+              }
+              #print-content {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+              }
+              \${styles}
+            </style>
+          </head>
+          <body>
+            <div id="print-content">\${section.outerHTML}</div>
+          </body>
+          </html>
+        \`);
+
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+      })();
+    `);
+  }
+});
+

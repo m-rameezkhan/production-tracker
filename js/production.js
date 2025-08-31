@@ -1,3 +1,4 @@
+import { showToast, showConfirm } from "./toast.js"
 document.addEventListener("DOMContentLoaded", () => {
   const dateInput = document.getElementById("date");
   if (dateInput) dateInput.value = new Date().toISOString().split("T")[0];
@@ -48,7 +49,7 @@ function handleFormSubmit(e) {
   // Send to Electron main process
   if (window.electronAPI?.saveProduction) {
     window.electronAPI.saveProduction(formData);
-    showSuccessMessage("Production saved ✅");
+    showToast("Production saved ✅");
   } else {
     console.log("Electron API not available. Data:", formData);
   }
@@ -60,26 +61,3 @@ function handleFormSubmit(e) {
   document.getElementById("L1_m")?.focus();
 }
 
-function showSuccessMessage(msg) {
-  let msgBox = document.getElementById("successMessage");
-  if (!msgBox) {
-    msgBox = document.createElement("div");
-    msgBox.id = "successMessage";
-    Object.assign(msgBox.style, {
-      position: "fixed",
-      top: "20px",
-      right: "20px",
-      background: "#4CAF50",
-      color: "#fff",
-      padding: "10px 20px",
-      borderRadius: "6px",
-      boxShadow: "0px 2px 6px rgba(0,0,0,0.2)",
-      fontSize: "14px",
-      zIndex: 9999
-    });
-    document.body.appendChild(msgBox);
-  }
-  msgBox.textContent = msg;
-  msgBox.style.display = "block";
-  setTimeout(() => msgBox.style.display = "none", 2000);
-}

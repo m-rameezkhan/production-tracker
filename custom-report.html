@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Report</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/custom-report.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">Production App</div>
+    <ul>
+      <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="production.html"><i class="fas fa-clipboard-list"></i> Production Entry</a></li>
+      <li><a href="daily-report.html"><i class="fas fa-calendar-day"></i> Daily Report</a></li>
+      <li><a href="monthly-report.html"><i class="fas fa-chart-line"></i> Monthly Report</a></li>
+      <li><a href="custom-report.html" class="active"><i class="fas fa-file-alt"></i> Custom Report</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="container">
+
+      <!-- Date Filter -->
+      <div class="filter-bar">
+        <label>From:</label>
+        <input type="date" id="fromDate">
+        <label>To:</label>
+        <input type="date" id="toDate">
+        <button id="generateReport"><i class="fas fa-filter"></i> Generate Report</button>
+      </div>
+
+
+      <div id="report-section">
+
+        <!-- Report Date -->
+        <div class="date">
+          <p id="reportRange" class="report-date-range">From 01-Aug-2025 To 15-Aug-2025</p>
+        </div>
+
+        <!-- Report Data -->
+        <div class="data">
+          <div class="head">
+            <div class="title">
+              <h2>Machine</h2>
+            </div>
+            <div class="title">
+              <h2>Production Meters</h2>
+            </div>
+            <div class="title">
+              <h2>Production KGs</h2>
+            </div>
+            <div class="title">
+              <div class="upper">
+                <h2>Unit 1 Total Production</h2>
+              </div>
+              <div class="lower">
+                <div class="meter">
+                  <h2>Meter</h2>
+                </div>
+                <div class="kgs">
+                  <h2>KGs</h2>
+                </div>
+              </div>
+            </div>
+            <div class="title">
+              <div class="upper">
+                <h2>Unit 2 Total Production</h2>
+              </div>
+              <div class="lower">
+                <div class="meter">
+                  <h2>Meter</h2>
+                </div>
+                <div class="kgs">
+                  <h2>KGs</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-body">
+            <div class="machines-name">
+              <div class="m-name">L01</div>
+              <div class="m-name">L02</div>
+              <div class="m-name">L03</div>
+              <div class="m-name">L04</div>
+              <div class="m-name">L05</div>
+            </div>
+
+            <div class="production-data-meter">
+              <div class="p-data-m">value</div>
+              <div class="p-data-m">value</div>
+              <div class="p-data-m">value</div>
+              <div class="p-data-m">value</div>
+              <div class="p-data-m">value</div>
+            </div>
+
+            <div class="production-data-kg">
+              <div class="p-data-kg">value</div>
+              <div class="p-data-kg">value</div>
+              <div class="p-data-kg">value</div>
+              <div class="p-data-kg">value</div>
+              <div class="p-data-kg">value</div>
+            </div>
+
+            <div class="blank"></div>
+            <div class="blank"></div>
+            <div class="blank"></div>
+            <div class="blank"></div>
+          </div>
+
+          <div class="total">
+            <div class="t">Total</div>
+            <div class="p-m-t">Total value Production Meter</div>
+            <div class="p-kg-t">Total value Production KGs</div>
+            <div class="u1-m-t">Total Unit 1 Production Meter</div>
+            <div class="u1-kg-t">Total Unit 1 Production KGs</div>
+            <div class="u2-m-t">Total Unit 2 Production Meter</div>
+            <div class="u2-kg-t">Total Unit 2 Production KGs</div>
+          </div>
+        </div>
+
+      </div>
+      <!-- Print Button -->
+      <div class="print-btn">
+        <button id="printReport"><i class="fas fa-print"></i> Print Report</button>
+      </div>
+    </div>
+  </div>
+  <!-- Place this at the end of <body> -->
+  <div id="toast-container"></div>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="confirm-modal">
+    <div class="confirm-box">
+      <p id="confirmMessage">Are you sure?</p>
+      <div class="confirm-actions">
+        <button id="confirmYes">Yes</button>
+        <button id="confirmNo">No</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/custom-report.js"></script>
+</body>
+
+</html>

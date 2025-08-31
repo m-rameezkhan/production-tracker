@@ -23,6 +23,7 @@
         <li><a href="production.html"><i class="fas fa-clipboard-list"></i> Production Entry</a></li>
         <li><a href="daily-report.html"><i class="fas fa-calendar-day"></i> Daily Report</a></li>
         <li><a href="monthly-report.html"><i class="fas fa-chart-line"></i> Monthly Report</a></li>
+        <li><a href="custom-report.html"><i class="fas fa-file-alt"></i> Custom Report</a></li>
       </ul>
     </aside>
 
@@ -92,8 +93,36 @@
       </div>
     </main>
   </div>
-  <script src="js/production.js" defer></script>
 
+  <!-- Place this at the end of <body> -->
+  <div id="toast-container"></div>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="confirm-modal">
+    <div class="confirm-box">
+      <p id="confirmMessage">Are you sure?</p>
+      <div class="confirm-actions">
+        <button id="confirmYes">Yes</button>
+        <button id="confirmNo">No</button>
+      </div>
+    </div>
+  </div>
+
+    <!-- Place this at the end of <body> -->
+  <div id="toast-container"></div>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="confirm-modal">
+    <div class="confirm-box">
+      <p id="confirmMessage">Are you sure?</p>
+      <div class="confirm-actions">
+        <button id="confirmYes">Yes</button>
+        <button id="confirmNo">No</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/production.js" defer></script>
 
 </body>
 

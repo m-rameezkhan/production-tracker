@@ -27,64 +27,66 @@
 
 /* From Row (Date Range + Button) */
 .from-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;                /* space between items */
-  margin: 15px 0;
-  padding: 10px 14px;
-  background: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* space between items */
+    margin: 15px 0;
+    padding: 10px 14px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 6px;
 }
 
 .from-row label {
-  font-weight: 600;
-  color: #333;
-  margin-right: 6px;
-  font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-right: 6px;
+    font-size: 14px;
 }
 
 .from-row input[type="date"] {
-  padding: 6px 10px;
-  border: 1px solid #bbb;
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: 'Roboto', sans-serif;
-  background: #fff;
-  cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    padding: 6px 10px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .from-row input[type="date"]:focus {
-  border-color: #4a90e2;
-  outline: none;
-  box-shadow: 0 0 4px rgba(74, 144, 226, 0.3);
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 4px rgba(74, 144, 226, 0.3);
 }
 
 /* Button Styling */
 .btn {
-  padding: 7px 14px;
-  background: #1e5a9e;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
-  border: 2px solid transparent;
+    padding: 7px 14px;
+    background: #1e5a9e;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    border: 2px solid transparent;
 }
 
 .btn:hover {
-  color: #1e5a9e;
-  background-color: white;
-  border: 2px solid #1e5a9e;
+    color: #1e5a9e;
+    background-color: white;
+    border: 2px solid #1e5a9e;
 }
 
 .from-row button:active {
-  transform: scale(0.97);
+    transform: scale(0.97);
 }
-.edit-btn{
+
+.edit-btn {
     margin-top: 5px;
 }
 
@@ -216,12 +218,34 @@
     color: #d32f2f;
 }
 
+.no-records {
+    margin: 20px;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #555;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.no-records i {
+    color: #d9534f;
+    margin-right: 8px;
+}
+
+
 
 /* Print Styles */
 @media print {
+
+    .card-actions {
+        display: none !important;
+    }
+
     .report-card {
         box-shadow: none;
-        border: 1px solid #000;
         page-break-inside: avoid;
         margin-bottom: 10px;
         font-size: 12px;

@@ -2,17 +2,23 @@
    Monthly Report Page Styles
    ========================== */
 
-/* Layout Adjustments */
-.window {
-  margin-left: 185px;
-  padding: 20px;
+body {
+  margin: 0;
 }
 
+/* Layout Adjustments */
+.window {
+  margin-left: 170px;
+  padding: 20px 10px;
+}
+
+/* General form-row */
 .form-row {
   margin-bottom: 15px;
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .form-row label {
@@ -20,65 +26,35 @@
   color: #333;
 }
 
-#monthSelect {
-  padding: 6px 10px;
-  border: 1px solid #444;
-  border-radius: 4px;
+/* Date Input Container */
+.date-input {
+  margin-left: 20px;
 }
 
-
-/* Report Table */
-#monthlyReportTable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+/* Radio option labels */
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 14px;
-  table-layout: fixed; /* Fix column widths */
 }
 
-#monthlyReportTable th,
-#monthlyReportTable td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: center;
-  word-wrap: break-word;
+input[type="radio"] {
+  transform: scale(1.2);
+  margin-right: 4px;
 }
 
-#monthlyReportTable th {
-  background: #f4f4f4;
-  font-weight: 600;
+/* Month & Date Inputs */
+input[type="month"],
+input[type="date"] {
+  padding: 6px 10px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
-/* Fix date column width */
-#monthlyReportTable th:first-child,
-#monthlyReportTable td:first-child {
-  width: 120px;
-}
-
-#monthlyReportTable tr:nth-child(even) {
-  background: #fafafa;
-}
-
-#monthlyReportTable tr:hover {
-  background: #f1f1f1;
-}
-
-/* Editable Inputs */
-#monthlyReportTable input {
-  width: 80px;
-  padding: 4px;
-  text-align: right;
-  border: none; /* removed border */
-  background: transparent;
-}
-
-/* Highlight row when in edit mode */
-#monthlyReportTable tr.editing {
-  background-color: #fff8d5 !important; /* soft yellow */
-}
-
-/* Button Styling */
-.btn {
+/* Fetch Button */
+button.btn {
   padding: 7px 14px;
   background: #1e5a9e;
   border: none;
@@ -91,14 +67,78 @@
   border: 2px solid transparent;
 }
 
-.btn:hover {
+button.btn:hover {
   color: #1e5a9e;
   background-color: white;
   border: 2px solid #1e5a9e;
 }
 
-.print-btn{
-    margin-top: 5px;
+/* Date Box Styling (above table) */
+.date-box {
+  padding: 5px;
+  background: #f9f9f9;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.date-box p {
+  margin: 0px;
+}
+
+/* ==========================
+   Monthly Report Table Styles
+   ========================== */
+#monthlyReportTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 12px;
+  table-layout: fixed;
+}
+
+#monthlyReportTable th,
+#monthlyReportTable td {
+  border: 1px solid #ccc;
+  padding: 5px;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+#monthlyReportTable th {
+  background: #f4f4f4;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+#monthlyReportTable td {
+  padding: 2px 0;
+}
+
+/* Fix date column width */
+#monthlyReportTable th:first-child,
+#monthlyReportTable td:first-child {
+  width: 80px;
+}
+
+#monthlyReportTable tr:nth-child(even) {
+  background: #fafafa;
+}
+
+#monthlyReportTable tr:hover {
+  background: #f1f1f1;
+}
+
+
+
+#monthlyReportTable input::-webkit-outer-spin-button,
+#monthlyReportTable input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Highlight row when editing */
+#monthlyReportTable tr.editing {
+  background-color: #fff8d5 !important;
 }
 
 /* Totals Row */
@@ -119,39 +159,60 @@
   font-style: italic;
 }
 
-/* Print Styles */
-@media print {
-  body {
-    margin: 0;
-    padding: 0;
-  }
-
-  .sidebar, .form-row, button {
-    display: none !important;
-  }
-
-  #monthlyReportTable {
-    font-size: 12pt;
-    border: 1px solid #000;
-  }
-
-  #monthlyReportTable th, #monthlyReportTable td {
-    border: 1px solid #000;
-    padding: 6px;
-  }
-
-  #monthlyReportTable input {
-    border: none;
-    background: #fff;
-  }
-
-  #monthlyReportTable .totals-row {
-    background: #ddd !important;
-    -webkit-print-color-adjust: exact;
-  }
+/* Print Button */
+.print-btn {
+  margin-top: 5px;
 }
 
-/* Responsive */
+/* ==========================
+   Table Number Inputs Fix
+   ========================== */
+#monthlyReportTable input[type=number] {
+  width: calc(100% - 2px);
+  padding: 2px 2px 2px 0px;
+  text-align: right;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  appearance: textfield;
+}
+
+#monthlyReportTable input::-webkit-outer-spin-button,
+#monthlyReportTable input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Action Buttons Column */
+.action-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-cell .btn {
+  padding: 0px 8px;
+  font-size: 12px;
+  line-height: 1.2;
+  min-width: 60px;
+}
+
+.action-cell .delete-btn {
+  background-color: red;
+}
+
+.action-cell .delete-btn:hover {
+  background-color: white;
+  color: red;
+  border: 2px solid red;
+}
+
+
+/* ==========================
+   Responsive Styles
+   ========================== */
 @media screen and (max-width: 768px) {
   .window {
     margin-left: 0;
@@ -163,6 +224,12 @@
   }
 
   #monthlyReportTable input {
-    width: 60px;
+    width: 40px;
+  }
+}
+
+@media print {
+  .action-cell, .action{
+    display: none;
   }
 }

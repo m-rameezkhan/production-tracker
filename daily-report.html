@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/entry.css">
   <!-- <link rel="stylesheet" href="css/report-card.css">   -->
-  <link rel="stylesheet" href="css/daily-report.css">  
+  <link rel="stylesheet" href="css/daily-report.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -21,7 +21,8 @@
         <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
         <li><a href="production.html"><i class="fas fa-clipboard-list"></i> Production Entry</a></li>
         <li><a href="daily-report.html"><i class="fas fa-calendar-day"></i> Daily Report</a></li>
-        <li><a href="monthly-report.html" class="active"><i class="fas fa-chart-line"></i> Monthly Report</a></li>
+        <li><a href="monthly-report.html"><i class="fas fa-chart-line"></i> Monthly Report</a></li>
+        <li><a href="custom-report.html"><i class="fas fa-file-alt"></i> Custom Report</a></li>
       </ul>
     </aside>
 
@@ -47,8 +48,23 @@
     </main>
   </div>
 
+  <!-- Place this at the end of <body> -->
+  <div id="toast-container"></div>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="confirm-modal">
+    <div class="confirm-box">
+      <p id="confirmMessage">Are you sure?</p>
+      <div class="confirm-actions">
+        <button id="confirmYes">Yes</button>
+        <button id="confirmNo">No</button>
+      </div>
+    </div>
+  </div>
+
+
   <script src="js/script.js" defer></script>
-  <script src="js/daily-report.js" defer></script>
+  <script type="module" src="js/daily-report.js" defer></script>
 </body>
 
 </html>

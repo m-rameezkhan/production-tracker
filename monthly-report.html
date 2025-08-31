@@ -20,35 +20,83 @@
         <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
         <li><a href="production.html"><i class="fas fa-clipboard-list"></i> Production Entry</a></li>
         <li><a href="daily-report.html"><i class="fas fa-calendar-day"></i> Daily Report</a></li>
-        <li><a href="monthly-report.html" class="active"><i class="fas fa-chart-line"></i> Monthly Report</a></li>
+        <li><a href="monthly-report.html"><i class="fas fa-chart-line"></i> Monthly Report</a></li>
+        <li><a href="custom-report.html"><i class="fas fa-file-alt"></i> Custom Report</a></li>
       </ul>
     </aside>
 
     <main class="content">
       <div class="window">
-        <div class="form-row">
-          <label for="monthSelect">Select Month:</label>
-          <input type="month" id="monthSelect">
-          <button id="fetchMonthly" class="btn">Show Report</button>
+
+        <div class="date-input">
+          <!-- Report Option Selection -->
+          <div class="form-row date-options">
+            <label>Select Report By:</label>
+
+            <label class="option-label">
+              <input type="radio" name="dateOption" value="month" checked> Month
+            </label>
+            <label class="option-label">
+              <input type="radio" name="dateOption" value="range"> Date Range
+            </label>
+            <label class="option-label">
+              <input type="radio" name="dateOption" value="all"> All Dates
+            </label>
+          </div>
+
+          <!-- Month Picker -->
+          <div class="form-row month-picker">
+            <label for="monthSelect">Select Month:</label>
+            <input type="month" id="monthSelect">
+          </div>
+
+          <!-- Date Range Picker -->
+          <div class="form-row range-picker" style="display:none;">
+            <label for="fromDate">From:</label>
+            <input type="date" id="fromDate">
+
+            <label for="toDate">To:</label>
+            <input type="date" id="toDate">
+          </div>
+
+          <!-- Fetch Button -->
+          <div class="form-row">
+            <button id="fetchMonthly" class="btn">Show Report</button>
+          </div>
         </div>
+
 
         <!-- Monthly Report Table -->
         <div class="report-container" id="monthlyReportContainer">
+          <div class="date-box">
+            <p>Date: August 2025</p>
+          </div>
           <table id="monthlyReportTable">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Machine 1 (m)</th>
-                <th>Machine 1 (kg)</th>
-                <th>Machine 2 (m)</th>
-                <th>Machine 2 (kg)</th>
-                <th>Grand Total (m)</th>
-                <th>Grand Total (kg)</th>
+                <th rowspan="2">Date</th>
+                <th colspan="3">Unit 1 (Meter)</th>
+                <th colspan="3">Unit 1 (KG)</th>
+                <th colspan="2">Unit 2 (Meter)</th>
+                <th colspan="2">Unit 2 (KG)</th>
+                <th rowspan="2">Grand Total (m)</th>
+                <th rowspan="2">Grand Total (kg)</th>
+                <th class="action" rowspan="2">Actions</th>
+              </tr>
+              <tr>
+                <th>L1</th>
+                <th>L2</th>
+                <th>L3</th>
+                <th>L1</th>
+                <th>L2</th>
+                <th>L3</th>
+                <th>L4</th>
+                <th>L5</th>
+                <th>L4</th>
+                <th>L5</th>
               </tr>
             </thead>
-            <tbody>
-              <!-- Filled dynamically -->
-            </tbody>
+            <tbody></tbody>
           </table>
         </div>
 
@@ -56,9 +104,22 @@
       </div>
     </main>
   </div>
+  <div id="toast-container"></div>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="confirm-modal">
+    <div class="confirm-box">
+      <p id="confirmMessage">Are you sure?</p>
+      <div class="confirm-actions">
+        <button id="confirmYes">Yes</button>
+        <button id="confirmNo">No</button>
+      </div>
+    </div>
+  </div>
+
 
   <script src="js/script.js" defer></script>
-  <script src="js/monthly-report.js" defer></script>
+  <script type="module" src="js/monthly-report.js" defer></script>
 </body>
 
 </html>
