@@ -27,7 +27,6 @@ function createWindow() {
       show: false,
     });
 
-    // Load lightweight splash HTML
     splash.loadFile(path.join(__dirname, "splash.html"));
 
     splash.once("ready-to-show", () => {
@@ -49,19 +48,28 @@ function createWindow() {
 
     win.loadFile("index.html");
 
-    // Close splash and show main window
+    // --- Splash timing control ---
+    const splashShownAt = Date.now();
+
     win.once("ready-to-show", () => {
+      const elapsed = Date.now() - splashShownAt;
+      const remaining = Math.max(0, 1500 - elapsed); // ensure at least 1s visible
+
       setTimeout(() => {
-        if (splash) splash.close();
+        if (splash) {
+          splash.close();
+          splash = null;
+        }
         win.maximize();
         win.show();
-      }, 1000); // 2s splash delay
+      }, remaining);
     });
 
   } catch (error) {
     console.error("Error creating window:", error);
   }
 }
+
 
 
 app.whenReady().then(createWindow);

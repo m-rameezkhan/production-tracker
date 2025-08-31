@@ -12,3 +12,4 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getProductionData: (filter) => ipcRenderer.invoke("get-production-data", filter),
   printPage: (id) => ipcRenderer.send("print-page", id),
 });
+
