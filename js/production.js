@@ -1,7 +1,8 @@
-import { showToast, showConfirm } from "./toast.js"
+import { showToast, showConfirm } from "./toast.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const dateInput = document.getElementById("date");
-  if (dateInput) dateInput.value = new Date().toISOString().split("T")[0];
+  if (dateInput) dateInput.value = getToday();
 
   const numberInputs = document.querySelectorAll("input[type=number]");
   numberInputs.forEach(input => input.addEventListener("input", calculateTotals));
@@ -12,6 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Optional: calculate totals if fields prefilled
   calculateTotals();
 });
+
+// ✅ Always get today's date in local yyyy-mm-dd
+function getToday() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 function calculateTotals() {
   const ids = ["L1_m","L1_kg","L2_m","L2_kg","L3_m","L3_kg","L4_m","L4_kg","L5_m","L5_kg"];
@@ -31,12 +41,12 @@ function calculateTotals() {
 
 function handleFormSubmit(e) {
   e.preventDefault();
-  
+
   const ids = ["L1_m","L1_kg","L2_m","L2_kg","L3_m","L3_kg","L4_m","L4_kg","L5_m","L5_kg"];
   const values = ids.reduce((acc, id) => ({ ...acc, [id]: Number(document.getElementById(id)?.value) || 0 }), {});
 
   const formData = {
-    Date: document.getElementById("date")?.value || new Date().toISOString().split("T")[0],
+    Date: document.getElementById("date")?.value || getToday(),
     ...values,
     Machine1_m: values.L1_m + values.L2_m + values.L3_m,
     Machine1_kg: values.L1_kg + values.L2_kg + values.L3_kg,
@@ -51,13 +61,12 @@ function handleFormSubmit(e) {
     window.electronAPI.saveProduction(formData);
     showToast("Production saved ✅");
   } else {
-    console.log("Electron API not available. Data:", formData);
+    console.warn("Electron API not available. Data:", formData);
   }
 
   // Reset form & totals
   e.target.reset();
-  document.getElementById("date").value = new Date().toISOString().split("T")[0];
+  document.getElementById("date").value = getToday();
   calculateTotals();
   document.getElementById("L1_m")?.focus();
 }
-

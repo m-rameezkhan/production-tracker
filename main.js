@@ -7,8 +7,28 @@ const fs = require('fs');
 let win;
 let splash;
 
+// Get path for user-writable data
+const userDataPath = app.getPath('userData');
+const dataFilePath = path.join(userDataPath, 'production.xlsx');
+const defaultFilePath = path.join(__dirname, 'production.xlsx');
+
+// Copy default file to userData on first run
+function ensureDataFile() {
+  if (!fs.existsSync(dataFilePath)) {
+    try {
+      fs.mkdirSync(userDataPath, { recursive: true });
+      fs.copyFileSync(defaultFilePath, dataFilePath);
+      console.log('Copied default production.xlsx to user data folder.');
+    } catch (err) {
+      console.error('Failed to copy production.xlsx:', err);
+    }
+  }
+}
+
 function createWindow() {
   try {
+    ensureDataFile();
+
     // Get image size
     const imagePath = path.join(__dirname, 'welcome.png');
     const image = require('electron').nativeImage.createFromPath(imagePath);
@@ -39,8 +59,10 @@ function createWindow() {
       width: 1200,
       height: 800,
       title: "Production Dashboard App",
+      autoHideMenuBar: true,
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
+        devTools: false,
         contextIsolation: true,
         nodeIntegration: false,
       }
@@ -48,12 +70,18 @@ function createWindow() {
 
     win.loadFile("index.html");
 
+    win.setMenuBarVisibility(false);
+    win.removeMenu();
+    win.webContents.on("devtools-opened", () => {
+      win.webContents.closeDevTools();
+    });
+
     // --- Splash timing control ---
     const splashShownAt = Date.now();
 
     win.once("ready-to-show", () => {
       const elapsed = Date.now() - splashShownAt;
-      const remaining = Math.max(0, 1500 - elapsed); // ensure at least 1s visible
+      const remaining = Math.max(0, 2000 - elapsed); // ensure at least 2s visible
 
       setTimeout(() => {
         if (splash) {
@@ -70,8 +98,6 @@ function createWindow() {
   }
 }
 
-
-
 app.whenReady().then(createWindow);
 
 app.on('activate', () => {
@@ -85,13 +111,9 @@ app.on('window-all-closed', () => {
 // ===== Update Production Data =====
 ipcMain.on('update-production', (event, updatedRow) => {
   try {
-    const filePath = path.join(__dirname, 'production.xlsx');
-    if (!fs.existsSync(filePath)) {
-      event.sender.send('production-updated', { success: false, message: "File not found" });
-      return;
-    }
+    ensureDataFile();
 
-    const workbook = XLSX.readFile(filePath);
+    const workbook = XLSX.readFile(dataFilePath);
     let worksheet = workbook.Sheets['Production'];
     if (!worksheet) {
       worksheet = XLSX.utils.json_to_sheet([]);
@@ -105,16 +127,14 @@ ipcMain.on('update-production', (event, updatedRow) => {
     if (index !== -1) {
       data[index] = { ...data[index], ...updatedRow };
     } else {
-      // If row not found, add new
       data.push(updatedRow);
     }
 
     const newSheet = XLSX.utils.json_to_sheet(data);
     workbook.Sheets['Production'] = newSheet;
-    XLSX.writeFile(workbook, filePath);
+    XLSX.writeFile(workbook, dataFilePath);
 
     console.log('Production updated:', updatedRow);
-
     event.sender.send('production-updated', { success: true, message: "Production data updated successfully" });
 
   } catch (error) {
@@ -125,47 +145,46 @@ ipcMain.on('update-production', (event, updatedRow) => {
 
 // ===== Fetch Production Data =====
 ipcMain.handle('get-production-data', (event, filter) => {
-  const filePath = path.join(__dirname, 'production.xlsx');
-  if (!fs.existsSync(filePath)) return [];
+  try {
+    ensureDataFile();
 
-  const workbook = XLSX.readFile(filePath);
-  const worksheet = workbook.Sheets['Production'];
-  if (!worksheet) return [];
+    const workbook = XLSX.readFile(dataFilePath);
+    const worksheet = workbook.Sheets['Production'];
+    if (!worksheet) return [];
 
-  const data = XLSX.utils.sheet_to_json(worksheet);
+    const data = XLSX.utils.sheet_to_json(worksheet);
 
-  if (filter.from && filter.to) {
-    return data.filter(row => row.Date >= filter.from && row.Date <= filter.to);
-  } else if (filter.month) {
-    return data.filter(row => row.Date.startsWith(filter.month));
-  } else {
-    return data;
+    if (filter.from && filter.to) {
+      return data.filter(row => row.Date >= filter.from && row.Date <= filter.to);
+    } else if (filter.month) {
+      return data.filter(row => row.Date.startsWith(filter.month));
+    } else {
+      return data;
+    }
+
+  } catch (err) {
+    console.error('Failed to fetch production data:', err);
+    return [];
   }
 });
 
 // ===== Delete Production Data =====
 ipcMain.handle("delete-production", async (event, date) => {
   try {
-    const filePath = path.join(__dirname, "production.xlsx");
-    if (!fs.existsSync(filePath)) {
-      return { success: false, message: "File not found" };
-    }
+    ensureDataFile();
 
-    const workbook = XLSX.readFile(filePath);
+    const workbook = XLSX.readFile(dataFilePath);
     const worksheet = workbook.Sheets["Production"];
     if (!worksheet) {
       return { success: false, message: "No Production sheet found" };
     }
 
     let data = XLSX.utils.sheet_to_json(worksheet);
-
-    // filter out row with the given date
     const newData = data.filter(r => r.Date !== date);
 
-    // overwrite sheet with updated data
     const newSheet = XLSX.utils.json_to_sheet(newData);
     workbook.Sheets["Production"] = newSheet;
-    XLSX.writeFile(workbook, filePath);
+    XLSX.writeFile(workbook, dataFilePath);
 
     console.log(`Row with Date ${date} deleted.`);
     return { success: true };
@@ -176,7 +195,7 @@ ipcMain.handle("delete-production", async (event, date) => {
   }
 });
 
-
+// ===== Print Page =====
 ipcMain.on("print-page", (event, elementId) => {
   if (win) {
     win.webContents.executeJavaScript(`
@@ -188,16 +207,10 @@ ipcMain.on("print-page", (event, elementId) => {
         }
 
         const printWindow = window.open("", "PRINT", "height=800,width=1200");
-
-        // Only include body + content styles; exclude any @page rules
         const styles = Array.from(document.styleSheets)
           .map(s => {
-            try {
-              return [...s.cssRules]
-                .filter(r => r.constructor.name !== 'CSSPageRule') // FILTER OUT @page
-                .map(r => r.cssText)
-                .join('');
-            } catch(e) { return ""; }
+            try { return [...s.cssRules].filter(r => r.constructor.name !== 'CSSPageRule').map(r => r.cssText).join(''); } 
+            catch(e) { return ""; }
           })
           .join("\\n");
 
@@ -234,4 +247,3 @@ ipcMain.on("print-page", (event, elementId) => {
     `);
   }
 });
-

@@ -75,7 +75,7 @@
   border-radius: 6px;
   font-size: 14px;
   color: #fff;
-  animation: slideIn 0.4s, fadeOut 0.5s 3s forwards;
+  animation: slideIn 0.4s, fadeOut 0.5s 7s forwards;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
@@ -85,6 +85,10 @@
 
 .toast.error {
   background-color: #dc3545; /* Red */
+}
+
+.toast.info {
+  background-color: #007bff; /* Blue */
 }
 
 .confirm-modal {

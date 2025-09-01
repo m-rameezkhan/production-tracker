@@ -1,12 +1,32 @@
-import { showToast, showConfirm } from "./toast.js"
+import { showToast, showConfirm } from "./toast.js";
+
 const dailyContainer = document.getElementById('dailyReportContainer');
 const fetchDailyBtn = document.getElementById('fetchDaily');
+const showAllBtn = document.getElementById('showAllDaily'); // Show All button
+const clearBtn = document.getElementById("clearData");
 
-fetchDailyBtn.addEventListener('click', async () => {
-  const fromDate = document.getElementById('fromDate').value;
-  const toDate = document.getElementById('toDate').value;
+clearBtn.addEventListener("click", () => {
+  // Clear input fields (example: fromDate and toDate)
+  const fromDateInput = document.getElementById("fromDate");
+  const toDateInput = document.getElementById("toDate");
 
-  const data = await window.electronAPI.getProductionData({ from: fromDate, to: toDate });
+  if (fromDateInput) fromDateInput.value = "";
+  if (toDateInput) toDateInput.value = "";
+
+  // Clear daily report container
+  const dailyContainer = document.getElementById("dailyReportContainer");
+  if (dailyContainer) dailyContainer.innerHTML = "";
+
+  // Optionally, show a success toast
+  showToast("Data cleared successfully", "success");
+});
+
+async function fetchDailyData(fromDate, toDate) {
+  const filter = {};
+  if (fromDate) filter.from = fromDate;
+  if (toDate) filter.to = toDate;
+
+  const data = await window.electronAPI.getProductionData(filter);
 
   dailyContainer.innerHTML = '';
 
@@ -20,7 +40,7 @@ fetchDailyBtn.addEventListener('click', async () => {
     return;
   }
 
-  // *** SORT DATA BY DATE BEFORE RENDERING ***
+  // Sort by date
   data.sort((a, b) => new Date(a.Date) - new Date(b.Date));
 
   data.forEach((row) => {
@@ -28,10 +48,8 @@ fetchDailyBtn.addEventListener('click', async () => {
     card.className = 'report-card';
 
     const dateObj = new Date(row.Date);
-    const options = { day: '2-digit', month: 'long', year: 'numeric' };
-    const formattedDate = dateObj.toLocaleDateString('en-GB', options);
+    const formattedDate = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
 
-    // Calculate totals here instead of using values from Excel
     const Machine1_m = (Number(row.L1_m) || 0) + (Number(row.L2_m) || 0) + (Number(row.L3_m) || 0);
     const Machine1_kg = (Number(row.L1_kg) || 0) + (Number(row.L2_kg) || 0) + (Number(row.L3_kg) || 0);
     const Machine2_m = (Number(row.L4_m) || 0) + (Number(row.L5_m) || 0);
@@ -41,7 +59,6 @@ fetchDailyBtn.addEventListener('click', async () => {
 
     card.innerHTML = `
       <div class="card-header">Date: ${formattedDate}</div>
-
       <div class="machine-wrapper">
         <div class="machine-box">
           <h4>UNIT 1</h4>
@@ -66,7 +83,6 @@ fetchDailyBtn.addEventListener('click', async () => {
             <input type="text" value="${row.L3_kg}" readonly>
           </div>
         </div>
-
         <div class="machine-box">
           <h4>UNIT 2</h4>
           <div class="form-header">
@@ -86,7 +102,6 @@ fetchDailyBtn.addEventListener('click', async () => {
           </div>
         </div>
       </div>
-
       <div class="totals-box">
         <h4>Totals</h4>
         <div class="totals-table">
@@ -112,7 +127,6 @@ fetchDailyBtn.addEventListener('click', async () => {
           </div>
         </div>
       </div>
-
       <div class="card-actions">
         <button class="edit-btn btn">Edit</button>
         <button class="delete-btn btn danger">Delete</button>
@@ -122,12 +136,10 @@ fetchDailyBtn.addEventListener('click', async () => {
     const editBtn = card.querySelector('.edit-btn');
     const deleteBtn = card.querySelector('.delete-btn');
     const inputs = card.querySelectorAll('input');
-
     const unit1Row = card.querySelector('.totals-row.unit1');
     const unit2Row = card.querySelector('.totals-row.unit2');
     const grandRow = card.querySelector('.totals-row.grand');
 
-    // === Edit/Save functionality ===
     editBtn.addEventListener('click', () => {
       if (editBtn.textContent === 'Edit') {
         inputs.forEach(input => {
@@ -161,26 +173,23 @@ fetchDailyBtn.addEventListener('click', async () => {
         grandRow.children[1].textContent = Grand_m;
         grandRow.children[2].textContent = Grand_kg;
 
-        const updatedData = {
+        window.electronAPI.updateProduction({
           Date: row.Date,
           L1_m, L1_kg, L2_m, L2_kg, L3_m, L3_kg,
           L4_m, L4_kg, L5_m, L5_kg,
           Machine1_m, Machine1_kg, Machine2_m, Machine2_kg,
           Grand_m, Grand_kg
-        };
-
-        window.electronAPI.updateProduction(updatedData);
+        });
 
         inputs.forEach(input => {
           input.setAttribute('readonly', true);
           input.style.border = '1px solid #bbb';
         });
         editBtn.textContent = 'Edit';
-        showToast("Record Update uccessfully")
+        showToast("Record updated successfully", "success");
       }
     });
 
-    // === Delete functionality ===
     deleteBtn.addEventListener('click', async () => {
       const confirmed = await showConfirm(`Are you sure you want to delete record for ${formattedDate}?`);
       if (confirmed) {
@@ -189,11 +198,11 @@ fetchDailyBtn.addEventListener('click', async () => {
           card.remove();
           if (dailyContainer.children.length === 0) {
             dailyContainer.innerHTML = `
-          <div class="no-records">
-            <i class="fas fa-exclamation-circle"></i> 
-            No records found.
-          </div>
-        `;
+              <div class="no-records">
+                <i class="fas fa-exclamation-circle"></i> 
+                No records found.
+              </div>
+            `;
           }
           showToast("Record deleted successfully", "success");
         } else {
@@ -202,13 +211,34 @@ fetchDailyBtn.addEventListener('click', async () => {
       }
     });
 
-
     dailyContainer.appendChild(card);
   });
+
+  // Show success toast after data is displayed
+  showToast("Records fetched successfully", "success");
+}
+
+// Fetch filtered data
+fetchDailyBtn.addEventListener('click', () => {
+  let fromDate = document.getElementById('fromDate').value;
+  let toDate = document.getElementById('toDate').value;
+
+  if (fromDate && toDate && fromDate > toDate) {
+    [fromDate, toDate] = [toDate, fromDate];
+    showToast("From date was later than To date, swapped automatically.", "info");
+  }
+
+  fetchDailyData(fromDate, toDate);
 });
 
+// Show all records
+showAllBtn.addEventListener('click', () => {
+  document.getElementById('fromDate').value = '';
+  document.getElementById('toDate').value = '';
+  fetchDailyData(); // No filter fetches all
+});
 
-
+// Print
 document.getElementById("printDaily").addEventListener("click", () => {
   window.electronAPI.printPage("dailyReportContainer");
 });

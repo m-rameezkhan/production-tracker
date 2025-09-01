@@ -1,20 +1,31 @@
-// custom-report.js
-import { showToast, showConfirm } from "./toast.js"
+import { showToast, showConfirm } from "./toast.js";
+
 const showReportBtn = document.getElementById("generateReport");
 const fromDateInput = document.getElementById("fromDate");
 const toDateInput = document.getElementById("toDate");
 
 showReportBtn.addEventListener("click", async () => {
-  const fromDate = fromDateInput.value;
-  const toDate = toDateInput.value;
+  let fromDate = fromDateInput.value;
+  let toDate = toDateInput.value;
 
   if (!fromDate || !toDate) {
-    showToast("Please select both From and To dates.", "error")
+    showToast("Please select both From and To dates.", "error");
     return;
+  }
+
+  // Swap dates automatically if fromDate > toDate
+  if (fromDate > toDate) {
+    [fromDate, toDate] = [toDate, fromDate];
+    showToast("From date was later than To date, swapped automatically.", "info");
   }
 
   // Fetch production data from main
   const data = await window.electronAPI.getProductionData({ from: fromDate, to: toDate });
+
+  if (!data || data.length === 0) {
+    showToast("No data found for the selected date range.", "error");
+    return;
+  }
 
   // Initialize sums
   let L1_m = 0, L1_kg = 0,
@@ -73,7 +84,7 @@ showReportBtn.addEventListener("click", async () => {
   dataDiv.querySelector(".u2-kg-t").textContent = Unit2_kg;
 
   // Add date range label
-  document.querySelector(".report-date-range").textContent = 
+  document.querySelector(".report-date-range").textContent =
     `Report From: ${fromDate} To: ${toDate}`;
 });
 
@@ -81,4 +92,3 @@ showReportBtn.addEventListener("click", async () => {
 document.getElementById("printReport").addEventListener("click", () => {
   window.electronAPI.printPage("report-section");
 });
-

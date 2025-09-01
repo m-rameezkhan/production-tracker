@@ -11,6 +11,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const monthPicker = document.querySelector(".month-picker");
   const rangePicker = document.querySelector(".range-picker");
   const dateOptions = document.querySelectorAll('input[name="dateOption"]');
+  const clearMonthlyBtn = document.getElementById("clearData");
+
+  clearMonthlyBtn.addEventListener("click", () => {
+
+    if (monthSelect) monthSelect.value = "";
+    if (fromDate) fromDate.value = "";
+    if (toDate) toDate.value = "";
+
+    // Clear table body
+    const tbody = document.querySelector("#monthlyReportTable tbody");
+    if (tbody) tbody.innerHTML = "";
+
+    // Optionally, reset radio buttons to default (month)
+    const dateOptions = document.querySelectorAll('input[name="dateOption"]');
+    if (dateOptions.length > 0) {
+      dateOptions.forEach(r => r.checked = false);
+    }
+
+    // Optionally, show a success toast
+    showToast("Monthly filters cleared successfully", "success");
+  });
+
 
   // Auto-select current month if not chosen
   if (monthSelect && !monthSelect.value) {
@@ -52,16 +74,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       params.month = month;
     } else if (selectedOption === "range") {
-      const from = fromDate.value;
-      const to = toDate.value;
+      let from = fromDate.value;
+      let to = toDate.value;
+
       if (!from || !to) {
         showToast("Please select both From and To dates.", "error");
         return;
       }
+
+      // Reverse date functionality
       if (from > to) {
-        showToast("From date cannot be after To date.", "error");
-        return;
+        [from, to] = [to, from];
+        showToast("From date was later than To date, swapped automatically.", "info");
       }
+
       params.from = from;
       params.to = to;
     }
@@ -69,15 +95,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const records = await window.electronAPI.getProductionData(params);
+
       if (!Array.isArray(records) || records.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="14" class="no-data">No data found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="14" class="no-data"><i class="fas fa-exclamation-circle"></i> No records found for the selected date range.</td></tr>`;
         return;
       }
 
-      // *** SORT RECORDS BY DATE BEFORE RENDERING ***
+      // Sort by date
       records.sort((a, b) => new Date(a.Date) - new Date(b.Date));
 
-      // Existing table rendering logic remains unchanged
+      // Render table
       tbody.innerHTML = "";
       let total = {
         L1_m: 0, L2_m: 0, L3_m: 0,
@@ -108,24 +135,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
-  <td>${dateStr}</td>
-  <td><input type="number" value="${row.L1_m}" disabled></td>
-  <td><input type="number" value="${row.L2_m}" disabled></td>
-  <td><input type="number" value="${row.L3_m}" disabled></td>
-  <td><input type="number" value="${row.L1_kg}" disabled></td>
-  <td><input type="number" value="${row.L2_kg}" disabled></td>
-  <td><input type="number" value="${row.L3_kg}" disabled></td>
-  <td><input type="number" value="${row.L4_m}" disabled></td>
-  <td><input type="number" value="${row.L5_m}" disabled></td>
-  <td><input type="number" value="${row.L4_kg}" disabled></td>
-  <td><input type="number" value="${row.L5_kg}" disabled></td>
-  <td class="grand-m">${grandM}</td>
-  <td class="grand-kg">${grandKg}</td>
-  <td class="action-cell">
-    <button class="edit-btn btn">Edit</button>
-    <button class="delete-btn btn">Delete</button>
-  </td>
-`;
+          <td>${dateStr}</td>
+          <td><input type="number" value="${row.L1_m}" disabled></td>
+          <td><input type="number" value="${row.L2_m}" disabled></td>
+          <td><input type="number" value="${row.L3_m}" disabled></td>
+          <td><input type="number" value="${row.L1_kg}" disabled></td>
+          <td><input type="number" value="${row.L2_kg}" disabled></td>
+          <td><input type="number" value="${row.L3_kg}" disabled></td>
+          <td><input type="number" value="${row.L4_m}" disabled></td>
+          <td><input type="number" value="${row.L5_m}" disabled></td>
+          <td><input type="number" value="${row.L4_kg}" disabled></td>
+          <td><input type="number" value="${row.L5_kg}" disabled></td>
+          <td class="grand-m">${grandM}</td>
+          <td class="grand-kg">${grandKg}</td>
+          <td class="action-cell">
+            <button class="edit-btn btn">Edit</button>
+            <button class="delete-btn btn">Delete</button>
+          </td>
+        `;
         tbody.appendChild(tr);
 
         Object.keys(total).forEach(k => total[k] += row[k]);
@@ -191,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             await window.electronAPI.updateProduction(updated);
             fetchBtn.click(); // refresh after save
-            showToast("Records Update Successsfully")
+            showToast("Records Updated Successfully", "success");
           }
         });
       });
@@ -204,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const confirmed = await showConfirm(`Delete record for ${date}?`);
           if (confirmed) {
-            const result = await window.electronAPI.deleteProduction(date); // <-- implement in preload
+            const result = await window.electronAPI.deleteProduction(date);
             if (result.success) {
               showToast(`Record for ${date} deleted successfully`, "success");
               fetchBtn.click(); // refresh after delete
@@ -214,7 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
       });
-
 
     } catch (err) {
       console.error("Error fetching monthly report:", err);
