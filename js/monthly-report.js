@@ -12,27 +12,54 @@ document.addEventListener("DOMContentLoaded", () => {
   const rangePicker = document.querySelector(".range-picker");
   const dateOptions = document.querySelectorAll('input[name="dateOption"]');
   const clearMonthlyBtn = document.getElementById("clearData");
+  const dateLabel = document.getElementById("date");
+
+  // Helpers to format dates
+  function formatDate(dateStr) {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" });
+  }
+
+  function formatMonth(monthStr) {
+    if (!monthStr) return "";
+    const [y, m] = monthStr.split("-");
+    const date = new Date(y, m - 1);
+    return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  }
+
+  function updateDateLabel(option, params, records = []) {
+    if (!dateLabel) return;
+
+    if (option === "month" && params.month) {
+      dateLabel.textContent = `Date: ${formatMonth(params.month)}`;
+    } else if (option === "range" && params.from && params.to) {
+      dateLabel.textContent = `From ${formatDate(params.from)} To ${formatDate(params.to)}`;
+    } else if (option === "all" && records.length > 0) {
+      const first = formatDate(records[0].Date);
+      const last = formatDate(records[records.length - 1].Date);
+      dateLabel.textContent = `From ${first} To ${last}`;
+    } else {
+      dateLabel.textContent = "Date: -";
+    }
+  }
 
   clearMonthlyBtn.addEventListener("click", () => {
-
     if (monthSelect) monthSelect.value = "";
     if (fromDate) fromDate.value = "";
     if (toDate) toDate.value = "";
 
-    // Clear table body
-    const tbody = document.querySelector("#monthlyReportTable tbody");
     if (tbody) tbody.innerHTML = "";
 
-    // Optionally, reset radio buttons to default (month)
     const dateOptions = document.querySelectorAll('input[name="dateOption"]');
     if (dateOptions.length > 0) {
       dateOptions.forEach(r => r.checked = false);
     }
 
-    // Optionally, show a success toast
+    if (dateLabel) dateLabel.textContent = "Date: -";
+
     showToast("Monthly filters cleared successfully", "success");
   });
-
 
   // Auto-select current month if not chosen
   if (monthSelect && !monthSelect.value) {
@@ -42,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     monthSelect.value = `${y}-${m}`;
   }
 
-  // Toggle month / range / all inputs
+  // Toggle inputs for Month / Range / All
   dateOptions.forEach(radio => {
     radio.addEventListener("change", () => {
       switch (radio.value) {
@@ -82,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Reverse date functionality
       if (from > to) {
         [from, to] = [to, from];
         showToast("From date was later than To date, swapped automatically.", "info");
@@ -91,13 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
       params.from = from;
       params.to = to;
     }
-    // if "all" is selected, params stay empty
 
     try {
       const records = await window.electronAPI.getProductionData(params);
 
       if (!Array.isArray(records) || records.length === 0) {
         tbody.innerHTML = `<tr><td colspan="14" class="no-data"><i class="fas fa-exclamation-circle"></i> No records found for the selected date range.</td></tr>`;
+        updateDateLabel(selectedOption, params, []);
         return;
       }
 
@@ -181,6 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
         tbody.appendChild(totalRow);
       }
 
+      // Update Date label
+      updateDateLabel(selectedOption, params, records);
+
       // Edit/Save functionality
       tbody.querySelectorAll(".edit-btn").forEach(btn => {
         btn.addEventListener("click", async () => {
@@ -234,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await window.electronAPI.deleteProduction(date);
             if (result.success) {
               showToast(`Record for ${date} deleted successfully`, "success");
-              fetchBtn.click(); // refresh after delete
+              fetchBtn.click();
             } else {
               showToast(`Failed to delete record: ${result.message}`, "error");
             }
@@ -245,6 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("Error fetching monthly report:", err);
       tbody.innerHTML = `<tr><td colspan="14" class="no-data">Failed to load data.</td></tr>`;
+      updateDateLabel(selectedOption, params, []);
     }
   });
 
